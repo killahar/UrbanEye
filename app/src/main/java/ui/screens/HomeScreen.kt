@@ -3,8 +3,10 @@ package com.example.urbaneye.ui.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,6 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.urbaneye.R
+import com.example.urbaneye.ui.values.CustomButton
 
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -27,22 +30,18 @@ fun HomeScreen(navController: NavController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(
-            painter = painterResource(R.drawable.safe_city),
-            contentDescription = "Safe City Image",
-            modifier = Modifier.size(200.dp)
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { navController.navigate("reportIncident") }) {
-            Text("Сообщить о происшествии")
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = { navController.navigate("info") }) {
-            Text("Справка")
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = { navController.navigate("cameras") }) {
-            Text("Посмотреть камеры")
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            CustomButton(
+                text = "Сообщить о происшествии",
+                onClick = { navController.navigate("enterName") }
+            )
+            CustomButton(
+                text = "Справка",
+                onClick = { navController.navigate("info") }
+            )
         }
     }
 }

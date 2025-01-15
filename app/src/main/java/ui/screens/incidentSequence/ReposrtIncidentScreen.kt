@@ -1,4 +1,4 @@
-package com.example.urbaneye.ui.screens
+package com.example.urbaneye.ui.screens.incidentSequence
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
