@@ -1,8 +1,7 @@
 package com.example.urbaneye.ui.values
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -13,16 +12,15 @@ import androidx.compose.ui.unit.dp
 import com.example.urbaneye.ui.sources.Colors
 
 @Composable
-fun CustomButton(text: String, onClick: () -> Unit) {
+fun CustomButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Button(
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(containerColor = Colors.ButtonBackground),
+        colors = ButtonDefaults.buttonColors(containerColor = Colors.ButtonBackgroundColor),
         shape = RoundedCornerShape(10.dp),
-        modifier = Modifier
+        modifier = modifier
             .padding(8.dp)
-            .width(150.dp)
-            .height(50.dp)
+            .wrapContentSize()
     ) {
-        Text(text, color = Colors.ButtonText)
+        Text(text, color = Colors.ButtonTextColor)
     }
 }

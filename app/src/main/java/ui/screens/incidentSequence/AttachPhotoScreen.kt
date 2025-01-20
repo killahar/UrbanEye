@@ -7,11 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -21,46 +17,37 @@ import com.example.urbaneye.ui.values.CustomInput
 import com.example.urbaneye.viewmodel.ReportIncidentViewModel
 
 @Composable
-fun EnterNameScreen(
+fun AttachPhotoScreen(
     viewModel: ReportIncidentViewModel,
-    onBack: () -> Unit,
-    onNext: () -> Unit
+    onSubmit: () -> Unit,
+    onBack: () -> Unit
 ) {
-    var surname by remember { mutableStateOf("") }
-    var name by remember { mutableStateOf("") }
-    var patronymic by remember { mutableStateOf("") }
+    var photoDescription by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .padding(16.dp)
             .background(Colors.BackgroundColor)
-            .padding(16.dp),
+            .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CustomInput(
-            value = surname,
-            onValueChange = { surname = it },
-            label = { Text("Фамилия") },
-            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
-        )
-        CustomInput(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text("Имя") },
-            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
-        )
-        CustomInput(
-            value = patronymic,
-            onValueChange = { patronymic = it },
-            label = { Text("Отчество") },
+        CustomButton(
+            text = "Прикрепить фото",
+            onClick = { /* Logic to attach photo */ },
             modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
         )
+        CustomInput(
+            value = photoDescription,
+            onValueChange = { photoDescription = it },
+            label = { Text("Описание фотографии") },
+            modifier = Modifier.fillMaxWidth()
+        )
         CustomButton(
-            text = "Далее",
+            text = "Отправить",
             onClick = {
-                viewModel.updateName(surname, name, patronymic)
-                onNext()
+                viewModel.updateIncidentDescription(photoDescription)
+                onSubmit()
             },
             modifier = Modifier.padding(top = 16.dp)
         )

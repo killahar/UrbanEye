@@ -3,9 +3,9 @@ package com.example.urbaneye.ui.sources
 import androidx.compose.ui.graphics.Color
 
 object Colors {
-    val Primary = Color(0xFF6200EA) // Фиолетовый
-    val Secondary = Color(0xFF03DAC5) // Бирюзовый
-    val Background = Color(0xFFF3FAFF) // Светло-серый
-    val ButtonText = Color(0xFFF3FAFF) // Белый
-    val ButtonBackground = Color(0xFF0C2358) // Тот же фиолетовый
+    val PrimaryColor = Color(0xFF6C86BC)
+    val SecondaryColor = Color(0xFF3B5998)
+    val BackgroundColor = Color(0xFFFCFCFF)
+    val ButtonTextColor = Color(0xFFE2E6F8)
+    val ButtonBackgroundColor = Color(0xFF0F234E)
 }
