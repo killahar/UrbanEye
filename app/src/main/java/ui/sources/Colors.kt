@@ -3,6 +3,7 @@ package com.example.urbaneye.ui.sources
 import androidx.compose.ui.graphics.Color
 
 object Colors {
+    val Error = Color(0xFFBC6C6C)
     val PrimaryColor = Color(0xFF6C86BC)
     val SecondaryColor = Color(0xFF3B5998)
     val BackgroundColor = Color(0xFFFCFCFF)
