@@ -41,6 +41,7 @@ fun EnterNameScreen(
     var nameErrorMessage by remember { mutableStateOf("") }
     var patronymicErrorMessage by remember { mutableStateOf("") }
 
+    // Функции UI-валидации
     fun validateField(value: String, isRequired: Boolean = true): String {
         return when {
             isRequired && value.isBlank() -> "Поле обязательно для заполнения"
@@ -48,7 +49,6 @@ fun EnterNameScreen(
             else -> ""
         }
     }
-
     fun validateFields(): Boolean {
         surnameErrorMessage = validateField(surname)
         nameErrorMessage = validateField(name)
@@ -150,6 +150,4 @@ fun EnterNameScreen(
             }
         }
     }
-
-
 }

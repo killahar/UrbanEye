@@ -75,4 +75,9 @@ class ReportIncidentViewModel : ViewModel() {
         phoneNumber = ""
         isAnonymous = false
     }
+
+    fun updatePhotoUris(uris: List<String>) {
+        photoUris = uris
+    }
+
 }

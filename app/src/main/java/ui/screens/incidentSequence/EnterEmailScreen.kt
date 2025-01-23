@@ -28,7 +28,28 @@ fun EnterEmailScreen(
     var email by remember { mutableStateOf("") }
     var phoneNumber by remember { mutableStateOf("") }
     var emailErrorMessage by remember { mutableStateOf("") }
+    var phoneErrorMessage by remember { mutableStateOf("") }
 
+    // Функции UI-валидации
+    fun validateEmail(): String {
+        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$".toRegex()
+        return when {
+            email.isBlank() -> "Поле обязательно для заполнения"
+            !emailRegex.matches(email) -> "Введите корректный адрес электронной почты"
+            else -> ""
+        }
+    }
+    fun validatePhoneNumber(): String {
+        return when {
+            phoneNumber.isBlank() -> "Поле обязательно для заполнения"
+            else -> ""
+        }
+    }
+    fun validateFields(): Boolean {
+        emailErrorMessage = validateEmail()
+        phoneErrorMessage = validatePhoneNumber()
+        return emailErrorMessage.isEmpty() && phoneErrorMessage.isEmpty()
+    }
 
     Column(
         modifier = Modifier
@@ -61,12 +82,7 @@ fun EnterEmailScreen(
                 value = email,
                 onValueChange = {
                     email = it
-                    val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$".toRegex()
-                    emailErrorMessage = if (emailRegex.matches(it)) {
-                        "" // Нет ошибок
-                    } else {
-                        "Введите корректный адрес электронной почты"
-                    }
+                    emailErrorMessage = validateEmail()
                 },
                 label = { Text("Электронная почта") },
                 modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
@@ -77,9 +93,14 @@ fun EnterEmailScreen(
             )
             CustomInput(
                 value = phoneNumber,
-                onValueChange = { phoneNumber = it },
+                onValueChange = {
+                    phoneNumber = it
+                    phoneErrorMessage = validatePhoneNumber()
+                },
                 label = { Text("Номер телефона") },
                 modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                isError = phoneErrorMessage.isNotEmpty(),
+                errorMessage = phoneErrorMessage,
                 filter = { it.isDigit() || it in "+ ()-" },
                 maxLines = 1,
                 maxChars = 35
@@ -94,9 +115,11 @@ fun EnterEmailScreen(
                 CustomButton(
                     text = "Далее",
                     onClick = {
-                        viewModel.updateEmail(email)
-                        viewModel.updatePhoneNumber(phoneNumber)
-                        onNext()
+                        if (validateFields()) {
+                            viewModel.updateEmail(email)
+                            viewModel.updatePhoneNumber(phoneNumber)
+                            onNext()
+                        }
                     },
                     modifier = Modifier.padding(top = 16.dp)
                 )
