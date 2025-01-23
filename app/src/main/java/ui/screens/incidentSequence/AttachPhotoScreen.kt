@@ -81,7 +81,7 @@ fun AttachPhotoScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Colors.BackgroundColor)
-                .padding(horizontal = 16.dp, vertical = 32.dp),
+                .padding(horizontal = 16.dp, vertical = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             CustomButton(
@@ -90,7 +90,7 @@ fun AttachPhotoScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp)
+                    .padding(bottom = 16.dp),
             )
 
             LazyRow(
