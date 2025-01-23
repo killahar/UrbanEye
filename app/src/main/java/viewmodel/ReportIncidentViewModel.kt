@@ -9,6 +9,8 @@ import com.example.urbaneye.data.repository.IncidentRepository
 
 class ReportIncidentViewModel : ViewModel() {
 
+    private val repository = IncidentRepository()
+
     var fullName by mutableStateOf("")
         private set
     var email by mutableStateOf("")
@@ -52,7 +54,7 @@ class ReportIncidentViewModel : ViewModel() {
 
 
 
-    fun submitIncident(repository: IncidentRepository) {
+    fun submitIncident() {
         val incident = Incident(
             fullName = fullName,
             email = email,
