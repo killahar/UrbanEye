@@ -5,13 +5,18 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.urbaneye.ui.sources.Colors
@@ -23,7 +28,9 @@ import com.example.urbaneye.viewmodel.ReportIncidentViewModel
 fun EnterEmailScreen(
     viewModel: ReportIncidentViewModel,
     onNext: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    totalSteps: Int,
+    currentStep: Int
 ) {
     var email by remember { mutableStateOf("") }
     var phoneNumber by remember { mutableStateOf("") }
@@ -61,21 +68,43 @@ fun EnterEmailScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Colors.ButtonBackgroundColor)
-                .padding(vertical = 24.dp),
+                .padding(vertical = 20.dp),
         ) {
             Text(
                 text = "Почта и номер",
                 color = Colors.ButtonTextColor,
-                fontSize = 24.sp,
+                fontSize = 30.sp,
                 modifier = Modifier.padding(start = 32.dp)
             )
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 32.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            repeat(totalSteps) { step ->
+                Box(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clip(CircleShape)
+                        .background(
+                            if (step < currentStep) Colors.SecondaryColor else Colors.PrimaryColor
+                        )
+                )
+                if (step < totalSteps - 1) {
+                    Spacer(modifier = Modifier.width(16.dp))
+                }
+            }
         }
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Colors.BackgroundColor)
-                .padding(horizontal = 16.dp, vertical = 32.dp),
+                .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             CustomInput(
@@ -85,7 +114,7 @@ fun EnterEmailScreen(
                     emailErrorMessage = validateEmail()
                 },
                 label = { Text("Электронная почта") },
-                modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
                 isError = emailErrorMessage.isNotEmpty(),
                 errorMessage = emailErrorMessage,
                 maxLines = 1,
@@ -98,7 +127,7 @@ fun EnterEmailScreen(
                     phoneErrorMessage = validatePhoneNumber()
                 },
                 label = { Text("Номер телефона") },
-                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+                modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp),
                 isError = phoneErrorMessage.isNotEmpty(),
                 errorMessage = phoneErrorMessage,
                 filter = { it.isDigit() || it in "+ ()-" },
@@ -110,7 +139,6 @@ fun EnterEmailScreen(
                 CustomButton(
                     text = "Назад",
                     onClick = onBack,
-                    modifier = Modifier.padding(top = 16.dp)
                 )
                 CustomButton(
                     text = "Далее",
@@ -121,7 +149,6 @@ fun EnterEmailScreen(
                             onNext()
                         }
                     },
-                    modifier = Modifier.padding(top = 16.dp)
                 )
             }
         }

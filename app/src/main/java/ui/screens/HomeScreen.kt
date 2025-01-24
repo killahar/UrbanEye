@@ -25,7 +25,7 @@ fun HomeScreen(navController: NavController) {
     ) {
         CustomButton(
             text = "Сообщить о происшествии",
-            onClick = { navController.navigate("enterName") }
+            onClick = { navController.navigate("enterName")}
         )
         CustomButton(
             text = "Справка",

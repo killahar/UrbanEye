@@ -25,7 +25,9 @@ fun AppNavigation() {
             EnterNameScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
-                onNext = { navController.navigate("enterEmail") }
+                onNext = { navController.navigate("enterEmail") },
+                currentStep = 1,
+                totalSteps = 4
             )
         }
 
@@ -33,7 +35,9 @@ fun AppNavigation() {
             EnterEmailScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
-                onNext = { navController.navigate("attachPhoto") }
+                onNext = { navController.navigate("attachPhoto") },
+                currentStep = 2,
+                totalSteps = 4
             )
         }
 
@@ -41,7 +45,9 @@ fun AppNavigation() {
             AttachPhotoScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() },
-                onNext = { navController.navigate("confirmData") }
+                onNext = { navController.navigate("confirmData") },
+                currentStep = 3,
+                totalSteps = 4
             )
         }
 
@@ -52,9 +58,12 @@ fun AppNavigation() {
                 onSubmit = {
                     navController.popBackStack("home", inclusive = false)
                     navController.navigate("home")
-                }
+                },
+                currentStep = 4,
+                totalSteps = 4
             )
         }
+
 
         composable("info") { InfoScreen(onBack = { navController.popBackStack() }) }
     }

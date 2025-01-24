@@ -9,10 +9,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,12 +36,18 @@ import com.example.urbaneye.ui.sources.Colors
 import com.example.urbaneye.ui.values.CustomButton
 import com.example.urbaneye.ui.values.CustomInput
 import com.example.urbaneye.viewmodel.ReportIncidentViewModel
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.runtime.LaunchedEffect
 
 @Composable
 fun AttachPhotoScreen(
     viewModel: ReportIncidentViewModel,
     onNext: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    totalSteps: Int,
+    currentStep: Int
 ) {
     var photoDescription by remember { mutableStateOf("") }
     val photoUris = remember { mutableStateListOf<Uri>() }
@@ -55,110 +63,150 @@ fun AttachPhotoScreen(
         }
     }
 
+    // Состояние для Snackbar
+    val snackbarHostState = remember { SnackbarHostState() }
+    var showSnackbar by remember { mutableStateOf(false) }
 
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Colors.BackgroundColor)
-    ) {
-        // Синий заголовок
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Colors.ButtonBackgroundColor)
-                .padding(vertical = 24.dp),
-        ) {
-            Text(
-                text = "Фото и описание",
-                color = Colors.ButtonTextColor,
-                fontSize = 24.sp,
-                modifier = Modifier.padding(start = 32.dp)
-            )
-        }
-
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Colors.BackgroundColor)
-                .padding(horizontal = 16.dp, vertical = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(paddingValues)
         ) {
-            CustomButton(
-                text = "Прикрепить фото",
-                onClick = { launcher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                },
+            // Синий заголовок
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-            )
-
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    .background(Colors.ButtonBackgroundColor)
+                    .padding(vertical = 20.dp),
             ) {
-                items(photoUris) { uri ->
+                Text(
+                    text = "Фото и описание",
+                    color = Colors.ButtonTextColor,
+                    fontSize = 30.sp,
+                    modifier = Modifier.padding(start = 32.dp)
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 32.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                repeat(totalSteps) { step ->
                     Box(
                         modifier = Modifier
-                            .size(100.dp)
-                            .clip(RoundedCornerShape(8.dp)) // Скругление углов
-                    ) {
-                        AsyncImage(
-                            model = uri,
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                        IconButton(
-                            onClick = {
-                                photoUris.remove(uri)
-                                viewModel.updatePhotoUris(photoUris.map { it.toString() })
-                            },
-                            modifier = Modifier
-                                .align(Alignment.TopEnd)
-                                .size(20.dp)
-                                .background(Colors.PrimaryColor, CircleShape)
-                        ) {
-                            Icon(
-                                Icons.Default.Close,
-                                contentDescription = null,
-                                tint = Colors.ButtonTextColor)
-                        }
+                            .size(24.dp)
+                            .clip(CircleShape)
+                            .background(
+                                if (step < currentStep) Colors.SecondaryColor else Colors.PrimaryColor
+                            )
+                    )
+                    if (step < totalSteps - 1) {
+                        Spacer(modifier = Modifier.width(16.dp))
                     }
                 }
             }
 
-
-            CustomInput(
-                value = photoDescription,
-                onValueChange = { photoDescription = it },
-                label = { Text("Описание фотографии") },
-                modifier = Modifier.fillMaxWidth(),
-                maxLines = 6,
-                maxChars = 450
-            )
-
-
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Colors.BackgroundColor)
+                    .padding(horizontal = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 CustomButton(
-                    text = "Назад",
-                    onClick = onBack,
-                    modifier = Modifier.padding(top = 16.dp)
+                    text = "Прикрепить фото",
+                    onClick = { launcher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 32.dp),
                 )
-                CustomButton(
-                    text = "Далее",
-                    onClick = {
-                        viewModel.updateIncidentDescription(photoDescription)
-                        onNext()
-                    },
-                    modifier = Modifier.padding(top = 16.dp)
+
+                LazyRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 32.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(photoUris) { uri ->
+                        Box(
+                            modifier = Modifier
+                                .size(120.dp)
+                                .clip(RoundedCornerShape(10.dp)) // Скругление углов
+                        ) {
+                            AsyncImage(
+                                model = uri,
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                            IconButton(
+                                onClick = {
+                                    photoUris.remove(uri)
+                                    viewModel.updatePhotoUris(photoUris.map { it.toString() })
+                                },
+                                modifier = Modifier
+                                    .align(Alignment.TopEnd)
+                                    .size(20.dp)
+                                    .background(Colors.PrimaryColor, CircleShape)
+                            ) {
+                                Icon(
+                                    Icons.Default.Close,
+                                    contentDescription = null,
+                                    tint = Colors.ButtonTextColor
+                                )
+                            }
+                        }
+                    }
+                }
+
+                CustomInput(
+                    value = photoDescription,
+                    onValueChange = { photoDescription = it },
+                    label = { Text("Описание фотографии") },
+                    modifier = Modifier.fillMaxWidth(),
+                    maxLines = 6,
+                    maxChars = 450
                 )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    CustomButton(
+                        text = "Назад",
+                        onClick = onBack,
+                        modifier = Modifier.padding(top = 32.dp)
+                    )
+                    CustomButton(
+                        text = "Далее",
+                        onClick = {
+                            if (photoUris.isEmpty()) {
+                                // Устанавливаем состояние для показа Snackbar
+                                showSnackbar = true
+                            } else {
+                                viewModel.updateIncidentDescription(photoDescription)
+                                onNext()
+                            }
+                        },
+                        modifier = Modifier.padding(top = 32.dp)
+                    )
+                }
             }
+        }
+    }
+
+    // LaunchedEffect для показа Snackbar
+    LaunchedEffect(showSnackbar) {
+        if (showSnackbar) {
+            snackbarHostState.showSnackbar("Пожалуйста, добавьте хотя бы одно фото.")
+            showSnackbar = false // Сбрасываем состояние после показа
         }
     }
 }

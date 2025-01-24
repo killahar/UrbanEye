@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
@@ -27,7 +28,9 @@ import com.example.urbaneye.viewmodel.ReportIncidentViewModel
 fun ConfirmDataScreen(
     viewModel: ReportIncidentViewModel,
     onSubmit: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    totalSteps: Int,
+    currentStep: Int
 ) {
     var selectedImageUri by remember { mutableStateOf<String?>(null) }
     var isDescriptionExpanded by remember { mutableStateOf(false) }
@@ -42,21 +45,43 @@ fun ConfirmDataScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Colors.ButtonBackgroundColor)
-                .padding(vertical = 24.dp),
+                .padding(vertical = 20.dp),
         ) {
             Text(
                 text = "Проверьте, все верно?",
                 color = Colors.ButtonTextColor,
-                fontSize = 24.sp,
+                fontSize = 30.sp,
                 modifier = Modifier.padding(start = 32.dp)
             )
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 32.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            repeat(totalSteps) { step ->
+                Box(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clip(CircleShape)
+                        .background(
+                            if (step < currentStep) Colors.SecondaryColor else Colors.PrimaryColor
+                        )
+                )
+                if (step < totalSteps - 1) {
+                    Spacer(modifier = Modifier.width(16.dp))
+                }
+            }
         }
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Colors.BackgroundColor)
-                .padding(16.dp),
+                .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column(
@@ -64,9 +89,12 @@ fun ConfirmDataScreen(
                     .fillMaxWidth()
                     .padding(vertical = 16.dp)
             ) {
-                Text("ФИО: ${viewModel.fullName}", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                Text("Email: ${viewModel.email}", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                Text("Телефон: ${viewModel.phoneNumber ?: "Скрыт (анонимно)"}", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text("ФИО:", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                Text(viewModel.fullName, fontSize = 18.sp)
+                Text("Почта:", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                Text(viewModel.email, fontSize = 18.sp)
+                Text("Телефон:", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                Text(viewModel.phoneNumber ?: "Скрыт (анонимно)", fontSize = 18.sp)
 
                 Box(
                     modifier = Modifier
@@ -78,16 +106,21 @@ fun ConfirmDataScreen(
                     Column(
                         modifier = if (isDescriptionExpanded) Modifier.verticalScroll(rememberScrollState()) else Modifier
                     ) {
+                        Text("Описание инцидента:", fontSize = 22.sp, fontWeight = FontWeight.Bold)
                         Text(
-                            text = "Описание инцидента: " + if (isDescriptionExpanded) viewModel.incidentDescription else viewModel.incidentDescription.take(50) + "...",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold
+                            if (isDescriptionExpanded) viewModel.incidentDescription
+                            else viewModel.incidentDescription.take(30) + "...",
+                            fontSize = 18.sp
                         )
                     }
                 }
 
                 if (viewModel.photoUris.isNotEmpty()) {
-                    Text("Прикрепленные фото:", fontSize = 18.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 16.dp))
+                    Text(
+                        text = "Прикрепленные фото:",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(top = 16.dp))
 
                     LazyRow(
                         modifier = Modifier
@@ -98,8 +131,8 @@ fun ConfirmDataScreen(
                         items(viewModel.photoUris) { uri ->
                             Box(
                                 modifier = Modifier
-                                    .size(100.dp)
-                                    .clip(RoundedCornerShape(8.dp))
+                                    .size(120.dp)
+                                    .clip(RoundedCornerShape(10.dp))
                                     .clickable { selectedImageUri = uri }
                             ) {
                                 AsyncImage(

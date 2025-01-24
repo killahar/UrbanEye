@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.urbaneye.ui.sources.Colors
 
 @Composable
@@ -18,9 +19,9 @@ fun CustomButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifie
         colors = ButtonDefaults.buttonColors(containerColor = Colors.ButtonBackgroundColor),
         shape = RoundedCornerShape(10.dp),
         modifier = modifier
-            .padding(8.dp)
             .wrapContentSize()
+            .padding(16.dp)
     ) {
-        Text(text, color = Colors.ButtonTextColor)
+        Text(text, color = Colors.ButtonTextColor, fontSize = 20.sp)
     }
 }
