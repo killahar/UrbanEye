@@ -2,10 +2,9 @@ package com.example.urbaneye.utils
 
 import android.net.Uri
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 
 class PhotoManager(private val pickPhotosLauncher: ActivityResultLauncher<Unit>) {
-    var selectedPhotos: MutableList<Uri> = mutableListOf()
+    private val selectedPhotos: MutableList<Uri> = mutableListOf()
 
     fun pickPhotos() {
         pickPhotosLauncher.launch(Unit)
@@ -24,4 +23,6 @@ class PhotoManager(private val pickPhotosLauncher: ActivityResultLauncher<Unit>)
     fun clearPhotos() {
         selectedPhotos.clear()
     }
+
+    fun getPhotos(): List<Uri> = selectedPhotos.toList()
 }

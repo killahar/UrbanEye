@@ -1,6 +1,5 @@
 package com.example.urbaneye.ui.values
 
-import android.text.InputFilter
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding

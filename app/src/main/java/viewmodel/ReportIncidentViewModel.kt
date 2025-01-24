@@ -1,8 +1,6 @@
 package com.example.urbaneye.viewmodel
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import com.example.urbaneye.data.model.Incident
 import com.example.urbaneye.data.repository.IncidentRepository
@@ -10,26 +8,32 @@ import com.example.urbaneye.data.repository.IncidentRepository
 class ReportIncidentViewModel : ViewModel() {
 
     private val repository = IncidentRepository()
+    private val _photoUris = mutableStateListOf<String>()
 
     var fullName by mutableStateOf("")
         private set
     var email by mutableStateOf("")
-        private set
     var incidentDescription by mutableStateOf("")
-        private set
-    var photoUris by mutableStateOf<List<String>>(emptyList())
+    var photoUris: List<String> by mutableStateOf(emptyList())
         private set
     var phoneNumber by mutableStateOf("")
-        private set
     var isAnonymous by mutableStateOf(false)
         private set
 
-
-
     fun attachPhoto(uri: String) {
-        if (photoUris.size < 10) { // Проверка на максимальное количество фотографий
-            photoUris = photoUris + uri
+        if (_photoUris.size < 10) {
+            _photoUris.add(uri)
+            updatePhotoUris()
         }
+    }
+
+    fun removePhoto(uri: String) {
+        _photoUris.remove(uri)
+        updatePhotoUris()
+    }
+
+    private fun updatePhotoUris() {
+        photoUris = _photoUris.toList()
     }
 
     fun updateEmail(newEmail: String) {
@@ -52,8 +56,6 @@ class ReportIncidentViewModel : ViewModel() {
         fullName = "$surname $name $patronymic".trim()
     }
 
-
-
     fun submitIncident() {
         val incident = Incident(
             fullName = fullName,
@@ -71,13 +73,8 @@ class ReportIncidentViewModel : ViewModel() {
         fullName = ""
         email = ""
         incidentDescription = ""
-        photoUris = emptyList()
+        _photoUris.clear()
         phoneNumber = ""
         isAnonymous = false
     }
-
-    fun updatePhotoUris(uris: List<String>) {
-        photoUris = uris
-    }
-
 }

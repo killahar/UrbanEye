@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -39,9 +38,6 @@ fun EnterNameScreen(
     totalSteps: Int,
     currentStep: Int
 ) {
-    var surname by remember { mutableStateOf("") }
-    var name by remember { mutableStateOf("") }
-    var patronymic by remember { mutableStateOf("") }
     var isPatronymicAbsent by remember { mutableStateOf(false) }
 
     var surnameErrorMessage by remember { mutableStateOf("") }
@@ -57,9 +53,9 @@ fun EnterNameScreen(
         }
     }
     fun validateFields(): Boolean {
-        surnameErrorMessage = validateField(surname)
-        nameErrorMessage = validateField(name)
-        patronymicErrorMessage = if (!isPatronymicAbsent) validateField(patronymic) else ""
+        surnameErrorMessage = validateField(viewModel.fullName.split(" ").getOrElse(0) { "" })
+        nameErrorMessage = validateField(viewModel.fullName.split(" ").getOrElse(1) { "" })
+        patronymicErrorMessage = if (!isPatronymicAbsent) validateField(viewModel.fullName.split(" ").getOrElse(2) { "" }) else ""
 
         return surnameErrorMessage.isEmpty() && nameErrorMessage.isEmpty() && patronymicErrorMessage.isEmpty()
     }
@@ -113,10 +109,17 @@ fun EnterNameScreen(
                 .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            val names = viewModel.fullName.split(" ")
+            val surname = names.getOrElse(0) { "" }
+            val name = names.getOrElse(1) { "" }
+            val patronymic = names.getOrElse(2) { "" }
 
             CustomInput(
                 value = surname,
-                onValueChange = { surname = it },
+                onValueChange = {
+                    viewModel.updateName(it, name, if (isPatronymicAbsent) "" else patronymic)
+                    surnameErrorMessage = validateField(it)
+                },
                 label = { Text("Фамилия") },
                 modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
                 isError = surnameErrorMessage.isNotEmpty(),
@@ -127,7 +130,10 @@ fun EnterNameScreen(
             )
             CustomInput(
                 value = name,
-                onValueChange = { name = it },
+                onValueChange = {
+                    viewModel.updateName(surname, it, if (isPatronymicAbsent) "" else patronymic)
+                    nameErrorMessage = validateField(it)
+                },
                 label = { Text("Имя") },
                 modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
                 isError = nameErrorMessage.isNotEmpty(),
@@ -139,7 +145,10 @@ fun EnterNameScreen(
             if (!isPatronymicAbsent) {
                 CustomInput(
                     value = patronymic,
-                    onValueChange = { patronymic = it },
+                    onValueChange = {
+                        viewModel.updateName(surname, name, it)
+                        patronymicErrorMessage = validateField(it)
+                    },
                     label = { Text("Отчество") },
                     modifier = Modifier.fillMaxWidth().padding(bottom = 32.dp),
                     isError = patronymicErrorMessage.isNotEmpty(),
